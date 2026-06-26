@@ -1,9 +1,12 @@
 package br.com.guilhermedev.conversor.principal;
 
+import br.com.guilhermedev.conversor.api.ConexaoAPI;
+import br.com.guilhermedev.conversor.model.Moeda;
+
 import java.util.Scanner;
 
 public class principal {
-    public static void main(String[] args) {
+    static void main() {
         Scanner leitura = new Scanner(System.in);
         int opcao = 0;
 
@@ -27,7 +30,33 @@ public class principal {
                 if(opcao >= 1 && opcao <=4) {
                     System.out.println("Digite o valor que deseja converter");
                     double valor = leitura.nextDouble();
-                    System.out.println("Sua conversão será processada em breve!");
+
+                    String moedaBase;
+                    String moedaAlvo;
+
+                    if (opcao == 1) {
+                        moedaBase = "USD";
+                        moedaAlvo = "BRL";
+                    } else if (opcao == 2) {
+                        moedaBase = "BRL";
+                        moedaAlvo = "USD";
+                    } else if (opcao == 3) {
+                        moedaBase = "EUR";
+                        moedaAlvo = "BRL";
+                    } else {
+                        moedaBase = "BRL";
+                        moedaAlvo = "EUR";
+                    }
+
+                    System.out.println("Processando sua conversão...");
+
+                    ConexaoAPI api = new ConexaoAPI();
+                    Moeda cotacao = api.buscarTaxa(moedaBase, moedaAlvo);
+
+                    if (cotacao != null) {
+                        double valorConvertido = valor * cotacao.conversionRate();
+                        System.out.printf("Valor %.2f [%s] corresponde ao valor final de => %.2f [%s]\n\n", valor, moedaBase, valorConvertido, moedaAlvo);
+                    }
                 } else if (opcao == 5) {
                     System.out.println("Finalizando o conversor. Até logo!");
                 } else {
